@@ -1,5 +1,6 @@
 var express = require('express');
 var mongoose = require('mongoose')
+var axios = require('axios');
 var app = express();
 const bodyParser = require('body-parser');
 
@@ -18,6 +19,9 @@ let db = mongoose.connection;
 db.on('error', console.error.bind(console, "MongoDB connection error: "))
 
 app.get('/', function(req, res){
+    axios.get('https://xkcd.com/info.0.json').then(function(response){
+        console.log(response)
+    })
     Todo.find(function(err, todo){
         console.log(todo)
         if(err){
@@ -26,7 +30,7 @@ app.get('/', function(req, res){
             res.render('todo.ejs', {todoList: todo});
         }
     })
-    
+
 })
 
 // Creates item in DB
@@ -47,7 +51,7 @@ app.post('/create', (req, res) => {
 })
 
 // Modifies item in DB
-app.put('/markdone', (req, res) => {
+app.put('/done', (req, res) => {
     let id = req.body.id;
     let err = null
     if(typeof id === "string"){
