@@ -14,7 +14,14 @@ let db = mongoose.connection;
 db.on('error', console.error.bind(console, "MongoDB connection error: "))
 
 app.get('/', function(req, res){
-    res.render('todo.ejs');
+    Todo.find(function(err, todo){
+        if(err){
+            res.json({"Error: ": err})
+        } else {
+            res.render('todo.ejs', {todoList: todo});
+        }
+    })
+    
 })
 
 // Creates item in DB
@@ -28,7 +35,8 @@ app.post('/', (req, res) => {
         if(err){
             res.json({"Error: ": err})
         } else {
-            res.json({"Status: ": "Successful", "ObjectId": todo.id})
+            res.redirect('/');
+            //res.json({"Status: ": "Successful", "ObjectId": todo.id})
         }
     })
 })
